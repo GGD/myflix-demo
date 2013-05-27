@@ -1,9 +1,10 @@
 Myflix::Application.routes.draw do
-  match 'home' => 'videos#index', as: 'home'
+  match 'home' => 'categories#index', as: 'home'
 
   get 'ui(/:action)', controller: 'ui'
 
+  resources :categories
   resources :videos
 
-  root to: 'videos#index'
+  root to: 'categories#index'
 end

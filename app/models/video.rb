@@ -1,3 +1,5 @@
 class Video < ActiveRecord::Base
-  attr_accessible :description, :large_cover, :small_cover, :title
+  belongs_to :category
+
+  attr_accessible :description, :large_cover, :small_cover, :title, :category_id
 end
