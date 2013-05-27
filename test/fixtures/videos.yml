@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyString
+  large_cover: MyString
+  small_cover: MyString
+
+two:
+  title: MyString
+  description: MyString
+  large_cover: MyString
+  small_cover: MyString
