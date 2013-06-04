@@ -16,4 +16,14 @@ describe Video do
     @video.save
     @video.category_id.should == category.id
   end
+
+  it "require a title" do
+    @video.title = nil
+    @video.should_not be_valid
+  end
+
+  it "require a description" do
+    @video.description = nil
+    @video.should_not be_valid
+  end
 end
