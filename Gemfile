@@ -27,5 +27,6 @@ end
 
 gem 'jquery-rails'
 
+gem 'strong_parameters'
 gem 'bootstrap_form'
 gem 'bcrypt-ruby'
