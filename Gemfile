@@ -26,3 +26,6 @@ group :production do
 end
 
 gem 'jquery-rails'
+
+gem 'bootstrap_form'
+gem 'bcrypt-ruby'
