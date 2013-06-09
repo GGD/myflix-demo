@@ -3,8 +3,10 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def require_user
-    flash[:info] = "Access reserved for members only. Please sign in first."
-    redirect_to sign_in_path unless current_user
+    unless current_user
+      flash[:info] = "Access reserved for members only. Please sign in first."
+      redirect_to sign_in_path
+    end
   end
 
   private
