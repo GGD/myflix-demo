@@ -6,7 +6,7 @@
           %h1 Register
         = f.alert_message "Please check your input below."
         %fieldset
-          = f.text_field :email, label: 'Email Address', class: 'span3'
+          = f.email_field :email, label: 'Email Address', class: 'span3'
           = f.password_field :password, label: 'Password', class: 'span3'
           = f.text_field :full_name, label: 'Full Name', class: 'span3'
         %fieldset.actions.control-group

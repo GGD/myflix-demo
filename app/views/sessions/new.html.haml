@@ -6,7 +6,7 @@
           %h1 Sign in
         %fieldset
           %label Email Address
-          = text_field_tag :email, params[:email]
+          = email_field_tag :email, params[:email]
           %label Password
           = password_field_tag :password
         %fieldset.action
