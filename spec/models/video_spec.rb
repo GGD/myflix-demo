@@ -11,6 +11,10 @@ describe Video do
       Video.create(title: 'SouthPark', description: 'south_park', large_cover: '/tmp/south_pard.jpg', small_cover: '/tmp/south_park.jpg', category_id: '2')
     end
 
+    it "return empty array if searching string is empty" do
+      expect(Video.search_by_title("")).to eq([])
+    end
+
     it "return empty array if video is not found" do
       search_term = "Superman"
       expect(Video.search_by_title(search_term)).to eq([])
