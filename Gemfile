@@ -21,6 +21,11 @@ group :test, :development do
   gem 'shoulda-matchers'
 end
 
+group :test do
+  gem 'fabrication'
+  gem 'faker'
+end
+
 group :production do
   gem 'pg'
 end
