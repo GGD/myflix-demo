@@ -13,15 +13,35 @@ describe SessionsController do
   end
 
   describe "POST create" do
-    it "puts authenticated user in session and redirects to categories_path" do
-      user = Fabricate(:user)
-      post :create, email: user.email, password: user.password
-      expect(session[:user_id]).to eq(user.id)
-      expect(response).to redirect_to categories_path
+    context "with valid credentials" do
+      before do
+        @ted = Fabricate(:user)
+        post :create, email: @ted.email, password: @ted.password
+      end
+
+      it "puts signed in user in session" do
+        expect(session[:user_id]).to eq(@ted.id)
+      end
+
+      it "redirects to categories_path" do
+        expect(response).to redirect_to categories_path
+      end
     end
-    it "renders :new template for unauthenticated user" do
-      user = Fabricate(:user)
-      expect(post :create, email: user.email, password: nil).to render_template :new
+
+    context "with invalid credentials" do
+      before do
+        @ted = Fabricate(:user)
+        post :create, email: @ted.email, password: @ted.password + 'asdfasdf'
+      end
+
+      it "does not pusts signed in user in session" do
+        expect(session[:user_id]).to be_nil
+      end
+
+      it "renders :new template with error message" do
+        expect(flash[:error]).not_to be_blank
+        expect(response).to render_template :new
+      end
     end
   end
 
