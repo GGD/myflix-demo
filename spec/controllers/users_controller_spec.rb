@@ -12,6 +12,7 @@ describe UsersController do
     it "assigns @user" do
       post :create, user: { email: nil, password: '1234', full_name: 'Ga Dii' }
       expect(assigns(:user)).to be_new_record
+      expect(assigns(:user)).to be_instance_of(User)
     end
 
     it "create user and redirect to categories_path when params is valid" do
