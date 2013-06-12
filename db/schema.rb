@@ -11,13 +11,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130608082606) do
+ActiveRecord::Schema.define(:version => 20130612122229) do
 
   create_table "categories", :force => true do |t|
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "reviews", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "video_id"
+    t.integer  "rating"
+    t.text     "content"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
+  add_index "reviews", ["video_id"], :name => "index_reviews_on_video_id"
 
   create_table "users", :force => true do |t|
     t.string   "email"

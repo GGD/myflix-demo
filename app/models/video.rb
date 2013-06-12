@@ -1,5 +1,6 @@
 class Video < ActiveRecord::Base
   belongs_to :category
+  has_many :reviews
 
   attr_accessible :description, :large_cover, :small_cover, :title, :category_id
 
