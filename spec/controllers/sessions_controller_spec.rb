@@ -14,13 +14,14 @@ describe SessionsController do
 
   describe "POST create" do
     context "with valid credentials" do
+      let(:ted) { Fabricate(:user) }
+
       before do
-        @ted = Fabricate(:user)
-        post :create, email: @ted.email, password: @ted.password
+        post :create, email: ted.email, password: ted.password
       end
 
       it "puts signed in user in session" do
-        expect(session[:user_id]).to eq(@ted.id)
+        expect(session[:user_id]).to eq(ted.id)
       end
 
       it "redirects to categories_path" do
