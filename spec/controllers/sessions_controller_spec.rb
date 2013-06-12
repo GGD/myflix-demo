@@ -30,8 +30,8 @@ describe SessionsController do
 
     context "with invalid credentials" do
       before do
-        @ted = Fabricate(:user)
-        post :create, email: @ted.email, password: @ted.password + 'asdfasdf'
+        ted = Fabricate(:user)
+        post :create, email: ted.email, password: ted.password + 'asdfasdf'
       end
 
       it "does not pusts signed in user in session" do
@@ -39,8 +39,11 @@ describe SessionsController do
       end
 
       it "renders :new template with error message" do
-        expect(flash[:error]).not_to be_blank
         expect(response).to render_template :new
+      end
+
+      it "shows error message" do
+        expect(flash[:error]).not_to be_blank
       end
     end
   end
@@ -49,6 +52,10 @@ describe SessionsController do
     it "destroy session and redirects to root_path" do
       get :destroy
       expect(session[:user_id]).to be_nil
+    end
+
+    it "redirects to root_path" do
+      get :destroy
       expect(response).to redirect_to root_path
     end
   end
