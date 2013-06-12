@@ -1,6 +1,6 @@
 class Video < ActiveRecord::Base
   belongs_to :category
-  has_many :reviews
+  has_many :reviews, order: 'created_at DESC'
 
   attr_accessible :description, :large_cover, :small_cover, :title, :category_id
 
