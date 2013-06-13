@@ -1,5 +1,11 @@
 class CategoriesController < ApplicationController
+  before_filter :require_user
+
   def index
+    unless current_user
+      flash[:info] = "Access reserved for members only. Please sign in first."
+      redirect_to root_path
+    end
     @categories = Category.includes(:videos).all
   end
 
