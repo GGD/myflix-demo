@@ -15,6 +15,6 @@ Myflix::Application.routes.draw do
     get 'search', to: 'videos#search', on: :collection
     resources :reviews, only: [:create]
   end
-  resources :queue_items, only: [:create]
+  resources :queue_items, only: [:create, :destroy]
 
 end
