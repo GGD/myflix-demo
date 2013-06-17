@@ -10,7 +10,7 @@ describe ReviewsController do
       
       context "with valid inputs" do
         before do
-          post :create, review: Fabricate.attributes_for(:review), video_id: video.id, user_id: current_user.id
+          post :create, review: { rating: 3, content: 'awesome!' }, video_id: video.id, user_id: current_user.id
         end
 
         it "redirects to video :show page" do
