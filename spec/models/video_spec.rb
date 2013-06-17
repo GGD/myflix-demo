@@ -26,4 +26,22 @@ describe Video do
       expect(Video.search_by_title(search_term)).to eq(videos)
     end
   end
+
+  describe "#average_rating" do
+    let (:video) { Fabricate(:video) }
+
+    it "returns one decimal place of the average rating" do
+      review1 = Fabricate(:review, rating: 4, video: video)
+      review2 = Fabricate(:review, rating: 5, video: video)
+      review3 = Fabricate(:review, rating: 1, video: video)
+      expect(video.average_rating).to eq(3.3)
+    end
+
+    it "count each reviewer's rating only the last time" do
+      tifa = Fabricate(:user)
+      tifa_review1 = Fabricate(:review, rating: 5, video: video, user: tifa)
+      tifa_review2 = Fabricate(:review, rating: 3, video: video, user: tifa)
+      expect(video.average_rating).to eq(3.0)
+    end
+  end
 end

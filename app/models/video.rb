@@ -11,4 +11,9 @@ class Video < ActiveRecord::Base
     return [] if search_term.blank?
     Video.where('title LIKE ?', "%#{search_term}%")
   end
+
+  def average_rating
+    rating_array = reviews.group(:user_id).map(&:rating)
+    (rating_array.sum.to_f / rating_array.size).round(1)
+  end
 end
