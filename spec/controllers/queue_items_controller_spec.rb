@@ -11,6 +11,16 @@ describe QueueItemsController do
       expect(assigns(:queue_items)).to match_array([queue_item1, queue_item2])
     end
 
+    it "assigns @queue_items order by position" do
+      tifa = Fabricate(:user)
+      session[:user_id] = tifa.id
+      queue_item1 = Fabricate(:queue_item, user: tifa, position: 2)
+      queue_item2 = Fabricate(:queue_item, user: tifa, position: 3)
+      queue_item3 = Fabricate(:queue_item, user: tifa, position: 1)
+      get :index
+      expect(assigns(:queue_items)).to eq([queue_item3, queue_item1, queue_item2])
+    end
+
     it "redirects to sign in page for unauthenticated user" do
       session[:user_id] = nil
       get :index 
@@ -99,6 +109,70 @@ describe QueueItemsController do
     it "redirects to sign in page for unauthenticated users " do
       delete :destroy, id: 1
       expect(response).to redirect_to sign_in_path
+    end
+  end
+
+  describe "POST order_exchanging" do
+    context "with valid inputs" do
+      it "redirects to my_queue_path" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        post :order_exchanging, position: { "1" => queue_item1.position.to_s, "2" => queue_item2.position.to_s }
+        expect(response).to redirect_to my_queue_path
+      end
+
+      it "returns to first position when order is the smallest one" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
+        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "7" }
+        expect(QueueItem.last.position).to eq(1)
+      end
+      it "returns to last position when order is the biggest one" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
+        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "7" }
+        expect(QueueItem.first.position).to eq(3)
+      end
+    end
+
+    context "with invalid inputs" do
+      it "does not change positions for non integer order" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
+        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "a" }
+        expect(QueueItem.last.position).to eq(3)
+      end
+
+      it "redirects to my_queue_path" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
+        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "a" }
+        expect(response).to redirect_to my_queue_path
+      end
+
+      it "shows error message" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
+        post :order_exchanging, position: { "1" => 11, "2" => 8, "3" => "a" }
+        expect(flash[:error]).not_to be_empty
+      end
     end
   end
 end

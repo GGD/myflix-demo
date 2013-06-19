@@ -15,6 +15,8 @@ Myflix::Application.routes.draw do
     get 'search', to: 'videos#search', on: :collection
     resources :reviews, only: [:create]
   end
-  resources :queue_items, only: [:create, :destroy]
+  resources :queue_items, only: [:create, :destroy] do
+    post 'order_exchanging', to: 'queue_items#order_exchanging', on: :collection
+  end
 
 end

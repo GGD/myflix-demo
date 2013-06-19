@@ -4,6 +4,15 @@ describe QueueItem do
   it { should belong_to(:user) }
   it { should belong_to(:video) }
 
+  describe "#by_position" do
+    it "returns queue items by descending position" do
+      queue_item1 = Fabricate(:queue_item, position: 1)
+      queue_item2 = Fabricate(:queue_item, position: 2)
+      queue_item3 = Fabricate(:queue_item, position: 3)
+      expect(QueueItem.by_position).to eq([queue_item1, queue_item2, queue_item3])
+    end
+  end
+
   describe "#video_title" do
     it "returns the title of the associated video" do
       video = Fabricate(:video, title: 'Monk')
@@ -44,6 +53,26 @@ describe QueueItem do
       video = Fabricate(:video, category: category)
       queue_item = Fabricate(:queue_item, video: video)
       expect(queue_item.category).to eq(category) 
+    end
+  end
+
+  describe "#reorder_position" do
+    before do
+      queue_item1 = Fabricate(:queue_item, position: 1)
+      queue_item2 = Fabricate(:queue_item, position: 2)
+      queue_item3 = Fabricate(:queue_item, position: 3)
+    end
+
+    it "updates the queue_items position for explicit orders" do
+      ids_with_order = {"1" => 3, "2" => 2, "3" => 1}
+      QueueItem.reorder_position(ids_with_order)
+      expect(QueueItem.first.position).to eq(3)
+    end
+
+    it "updates the queue_items position started from 1" do
+      ids_with_order = {"1" => -1, "2" => 3, "3" => 5}
+      QueueItem.reorder_position(ids_with_order)
+      expect(QueueItem.first.position).to eq(1)
     end
   end
 end

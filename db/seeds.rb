@@ -11,6 +11,7 @@ Category.create(name: 'TV Dramas')
 
 monk = Video.create(title: 'Monk', description: 'Moooonk', large_cover: '/tmp/monk_large.jpg', small_cover: '/tmp/monk.jpg', category_id: '1')
 Video.create(title: 'SouthPark', description: 'south_park', large_cover: '/tmp/south_pard.jpg', small_cover: '/tmp/south_park.jpg', category_id: '2')
+Video.create(title: 'Arrow', description: 'arrow', large_cover: '/tmp/south_pard.jpg', small_cover: '/tmp/south_park.jpg', category_id: '2')
 
 ggd = User.create(email: 'ggd@example.com', password: '1234', full_name: 'Ga Dii')
 

@@ -2,7 +2,7 @@ class QueueItemsController < ApplicationController
   before_filter :require_user
 
   def index
-    @queue_items = current_user.queue_items
+    @queue_items = current_user.queue_items.by_position
   end
 
   def create
@@ -17,7 +17,27 @@ class QueueItemsController < ApplicationController
     redirect_to my_queue_path
   end
 
+  def order_exchanging
+    queue_item_ids_with_order = params[:position]
+    invalid_params = invalid_position?(queue_item_ids_with_order)
+    if invalid_params
+      flash[:error] = invalid_params
+    else
+      QueueItem.reorder_position(queue_item_ids_with_order)
+    end
+    redirect_to my_queue_path
+  end
+
   private
+
+  def invalid_position?(ids_with_order_hash)
+    result = ids_with_order_hash.map { |k,v| is_number?(v) }
+    "Order should be a number." if result.include?(false)
+  end
+
+  def is_number?(object)
+    true if Float(object) rescue false
+  end
 
   def queue_video(video)
     QueueItem.create(video: video, user: current_user, position: new_queue_item_position) unless current_user_queued_video?(video)
