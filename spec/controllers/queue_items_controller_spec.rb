@@ -97,6 +97,15 @@ describe QueueItemsController do
       expect(QueueItem.count).to eq(0)
     end
 
+    it "normalizes the remaining queue items" do
+      tifa = Fabricate(:user)
+      session[:user_id] = tifa.id
+      queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+      queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+      delete :destroy, id: queue_item1.id
+      expect(queue_item2.reload.position).to eq(1)
+    end
+
     it "does not delete the queue item if the current user is not the owner" do
       tifa = Fabricate(:user)
       yuri = Fabricate(:user)
@@ -119,49 +128,46 @@ describe QueueItemsController do
         session[:user_id] = tifa.id
         queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        post :order_exchanging, position: { "1" => queue_item1.position.to_s, "2" => queue_item2.position.to_s }
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 1}, {id: queue_item2.id, position: 2}]
         expect(response).to redirect_to my_queue_path
       end
 
-      it "returns to first position when order is the smallest one" do
+      it "reorders the queue items" do
         tifa = Fabricate(:user)
         session[:user_id] = tifa.id
         queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
-        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "7" }
-        expect(QueueItem.last.position).to eq(1)
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 2}, {id: queue_item2.id, position: 1}]
+        expect(tifa.queue_items).to eq([queue_item2, queue_item1])
       end
-      it "returns to last position when order is the biggest one" do
+
+      it "normalizes the position numbers" do
         tifa = Fabricate(:user)
         session[:user_id] = tifa.id
         queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
-        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "7" }
-        expect(QueueItem.first.position).to eq(3)
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 3}, {id: queue_item2.id, position: 2}]
+        expect(tifa.queue_items.map(&:position)).to eq([1, 2])
       end
     end
 
     context "with invalid inputs" do
-      it "does not change positions for non integer order" do
-        tifa = Fabricate(:user)
-        session[:user_id] = tifa.id
-        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
-        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
-        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "a" }
-        expect(QueueItem.last.position).to eq(3)
-      end
-
       it "redirects to my_queue_path" do
         tifa = Fabricate(:user)
         session[:user_id] = tifa.id
         queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
-        post :order_exchanging, position: { "1" => "11", "2" => "8", "3" => "a" }
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 1.2}, {id: queue_item2.id, position: 2}]
         expect(response).to redirect_to my_queue_path
+      end
+
+      it "does not change the queue_items" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 3}, {id: queue_item2.id, position: 2.5}]
+        expect(queue_item1.reload.position).to eq(1)
       end
 
       it "shows error message" do
@@ -169,9 +175,27 @@ describe QueueItemsController do
         session[:user_id] = tifa.id
         queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
-        queue_item3 = Fabricate(:queue_item, user: tifa, position: 3)
-        post :order_exchanging, position: { "1" => 11, "2" => 8, "3" => "a" }
-        expect(flash[:error]).not_to be_empty
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 1.2}, {id: queue_item2.id, position: 2}]
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "with unauthenticated users" do
+      it "returns to sign_in_path" do
+        post :update_queue, queue_items: [{id: 1, position: 2}, {id: 2, position: 4}]
+        expect(response).to redirect_to sign_in_path
+      end
+    end
+
+    context "with queue items that do not belongs to the current user" do
+      it "does not change the queue items" do
+        tifa = Fabricate(:user)
+        session[:user_id] = tifa.id
+        bob = Fabricate(:user)
+        queue_item1 = Fabricate(:queue_item, user: bob, position: 1)
+        queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
+        post :update_queue, queue_items: [{id: queue_item1.id, position: 3}, {id: queue_item2.id, position: 2}]
+        expect(queue_item1.reload.position).to eq(1)
       end
     end
   end

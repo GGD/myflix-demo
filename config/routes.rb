@@ -5,6 +5,7 @@ Myflix::Application.routes.draw do
   get 'sign_in', to: 'sessions#new', as: 'sign_in'
   get 'sign_out', to: 'sessions#destroy', as: 'sign_out'
   get 'my_queue', to: 'queue_items#index'
+  post 'update_queue', to: 'queue_items#update_queue'
 
   root to: 'static#front'
 
@@ -15,8 +16,6 @@ Myflix::Application.routes.draw do
     get 'search', to: 'videos#search', on: :collection
     resources :reviews, only: [:create]
   end
-  resources :queue_items, only: [:create, :destroy] do
-    post 'order_exchanging', to: 'queue_items#order_exchanging', on: :collection
-  end
+  resources :queue_items, only: [:create, :destroy]
 
 end
