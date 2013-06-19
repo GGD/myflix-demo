@@ -23,7 +23,7 @@ class QueueItemsController < ApplicationController
     if invalid_params
       flash[:error] = invalid_params
     else
-      QueueItem.reorder_position(queue_item_ids_with_order)
+      current_user.queue_items.reorder_position(queue_item_ids_with_order)
     end
     redirect_to my_queue_path
   end
