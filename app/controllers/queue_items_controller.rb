@@ -31,15 +31,6 @@ class QueueItemsController < ApplicationController
 
   private
 
-  def invalid_position?(ids_with_order_hash)
-    result = ids_with_order_hash.map { |k,v| is_number?(v) }
-    "Order should be a number." if result.include?(false)
-  end
-
-  def is_number?(object)
-    true if Float(object) rescue false
-  end
-
   def queue_video(video)
     QueueItem.create(video: video, user: current_user, position: new_queue_item_position) unless current_user_queued_video?(video)
   end
