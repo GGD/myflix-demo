@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe QueueItemsController do
   describe "GET index" do
+    before { set_current_user }
+
     it "assigns @queue_items for authenticated user" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       queue_item1 = Fabricate(:queue_item, user: tifa)
       queue_item2 = Fabricate(:queue_item, user: tifa)
       get :index
@@ -12,8 +13,7 @@ describe QueueItemsController do
     end
 
     it "assigns @queue_items order by position" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       queue_item1 = Fabricate(:queue_item, user: tifa, position: 2)
       queue_item2 = Fabricate(:queue_item, user: tifa, position: 3)
       queue_item3 = Fabricate(:queue_item, user: tifa, position: 1)
@@ -21,44 +21,39 @@ describe QueueItemsController do
       expect(assigns(:queue_items)).to eq([queue_item3, queue_item1, queue_item2])
     end
 
-    it "redirects to sign in page for unauthenticated user" do
-      session[:user_id] = nil
-      get :index 
-      expect(response).to redirect_to sign_in_path
+    it_behaves_like "require_sign_in" do
+      let (:action) { get :index }
     end
   end
 
   describe "POST create" do
+    before { set_current_user }
+
     it "redirects to my queue page" do
-      session[:user_id] = Fabricate(:user).id
       post :create, video_id: Fabricate(:video).id
       expect(response).to redirect_to my_queue_path
     end
 
     it "creates a queue item" do
-      session[:user_id] = Fabricate(:user).id
       post :create, video_id: Fabricate(:video).id
       expect(QueueItem.count).to eq(1)
     end
 
     it "creates the queue item associated with the video" do
-      session[:user_id] = Fabricate(:user).id
       video = Fabricate(:video)
       post :create, video_id: video.id
       expect(QueueItem.first.video).to eq(video)
     end
 
     it "creates the queue item associated with the sign in user" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       video = Fabricate(:video)
       post :create, video_id: video.id
       expect(QueueItem.first.user).to eq(tifa)
     end
 
     it "puts the video as the last one in the queue" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       video1 = Fabricate(:video)
       Fabricate(:queue_item, video: video1, user: tifa)
       video2 = Fabricate(:video)
@@ -68,38 +63,36 @@ describe QueueItemsController do
     end
 
     it "adds the video only once in the queue" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       video = Fabricate(:video)
       Fabricate(:queue_item, video: video, user: tifa )
       post :create, video_id: video.id
       expect(tifa.queue_items.count).to eq(1)
     end
 
-    it "redirects to sign in page for unauthenticated users" do
-      post :create, video_id: 1
-      expect(response).to redirect_to sign_in_path
+    it_behaves_like "require_sign_in" do
+      let (:action) { post :create, video_id: 1 }
     end
   end
 
   describe "DELETE destroy" do
+    before { set_current_user }
+
     it "redirects to my queue page" do
-      session[:user_id] = Fabricate(:user).id
+      set_current_user
       delete :destroy, id: Fabricate(:queue_item)
       expect(response).to redirect_to my_queue_path
     end
 
     it "delete the queue item" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       queue_item = Fabricate(:queue_item, user: tifa)
       delete :destroy, id: queue_item.id
       expect(QueueItem.count).to eq(0)
     end
 
     it "normalizes the remaining queue items" do
-      tifa = Fabricate(:user)
-      session[:user_id] = tifa.id
+      tifa = current_user
       queue_item1 = Fabricate(:queue_item, user: tifa, position: 1)
       queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
       delete :destroy, id: queue_item1.id
@@ -107,17 +100,15 @@ describe QueueItemsController do
     end
 
     it "does not delete the queue item if the current user is not the owner" do
-      tifa = Fabricate(:user)
+      tifa = current_user
       yuri = Fabricate(:user)
-      session[:user_id] = tifa.id
       queue_item = Fabricate(:queue_item, user: yuri)
       delete :destroy, id: queue_item.id
       expect(QueueItem.count).to eq(1)
     end
 
-    it "redirects to sign in page for unauthenticated users " do
-      delete :destroy, id: 1
-      expect(response).to redirect_to sign_in_path
+    it_behaves_like "require_sign_in" do
+      let (:action) { delete :destroy, id: 1 }
     end
   end
 
@@ -173,16 +164,15 @@ describe QueueItemsController do
     end
 
     context "with unauthenticated users" do
-      it "returns to sign_in_path" do
-        post :update_queue, queue_items: [{id: 1, position: 2}, {id: 2, position: 4}]
-        expect(response).to redirect_to sign_in_path
+      it_behaves_like "require_sign_in" do
+        let (:action) { post :update_queue, queue_items: [{id: 1, position: 1}, {id: 2, position: 2}] }
       end
     end
 
     context "with queue items that do not belongs to the current user" do
       it "does not change the queue items" do
-        tifa = Fabricate(:user)
-        session[:user_id] = tifa.id
+        set_current_user
+        tifa = current_user
         bob = Fabricate(:user)
         queue_item1 = Fabricate(:queue_item, user: bob, position: 1)
         queue_item2 = Fabricate(:queue_item, user: tifa, position: 2)
