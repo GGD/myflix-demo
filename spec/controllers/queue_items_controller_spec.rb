@@ -112,7 +112,12 @@ describe QueueItemsController do
     end
   end
 
-  describe "POST order_exchanging" do
+  describe "POST udpate_queue" do
+    
+    it_behaves_like "require_sign_in" do
+      let (:action) { post :update_queue, queue_items: [{id: 1, position: 1}, {id: 2, position: 2}] }
+    end
+
     context "with valid inputs" do
       let (:tifa) { Fabricate(:user) }
       let (:queue_item1) { Fabricate(:queue_item, user: tifa, position: 1) }
@@ -160,12 +165,6 @@ describe QueueItemsController do
       it "shows error message" do
         post :update_queue, queue_items: [{id: queue_item1.id, position: 1.2}, {id: queue_item2.id, position: 2}]
         expect(flash[:error]).to be_present
-      end
-    end
-
-    context "with unauthenticated users" do
-      it_behaves_like "require_sign_in" do
-        let (:action) { post :update_queue, queue_items: [{id: 1, position: 1}, {id: 2, position: 2}] }
       end
     end
 
