@@ -24,6 +24,7 @@ end
 group :test do
   gem 'fabrication'
   gem 'faker'
+  gem 'capybara'
 end
 
 group :production do
