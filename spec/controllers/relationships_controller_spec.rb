@@ -7,8 +7,8 @@ describe RelationshipsController do
     end
 
     it "assigns @relationships to the current user's following relationships" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       relationship = Fabricate(:relationship, follower: tifa, leader: ted)
       get :index
@@ -22,8 +22,8 @@ describe RelationshipsController do
     end
 
     it "redirects to people page" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       relationship = Fabricate(:relationship, follower: tifa, leader: ted)
       delete :destroy, id: relationship.id
@@ -31,8 +31,8 @@ describe RelationshipsController do
     end
 
     it "deletes the relationship if current user is the follower" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       relationship = Fabricate(:relationship, follower: tifa, leader: ted)
       delete :destroy, id: relationship.id
@@ -40,8 +40,8 @@ describe RelationshipsController do
     end
 
     it "does not delete the relationship if current user is not the follower" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       bob = Fabricate(:user)
       ted = Fabricate(:user)
       relationship = Fabricate(:relationship, follower: bob, leader: ted)
@@ -56,24 +56,24 @@ describe RelationshipsController do
     end
 
     it "redirects to people page" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       post :create, leader_id: ted.id
       expect(response).to redirect_to people_path
     end
 
     it "creates a relationship that the current user follows the leader" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       post :create, leader_id: ted.id
       expect(tifa.following_relationships.first.leader).to eq(ted)
     end
 
     it "does not create a relationship if the current user already follows the leader" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       ted = Fabricate(:user)
       relationship = Fabricate(:relationship, follower: tifa, leader: ted)
       post :create, leader_id: ted.id
@@ -81,8 +81,8 @@ describe RelationshipsController do
     end
 
     it "does not allow one to follow themselves" do
-      set_current_user
-      tifa = current_user
+      tifa = Fabricate(:user)
+      set_current_user(tifa)
       post :create, leader_id: tifa.id
       expect(Relationship.count).to eq(0)
     end
