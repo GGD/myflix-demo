@@ -5,7 +5,7 @@
     %ul.span4.clearfix
       %li= link_to "Videos"
       %li= link_to "My Queue", my_queue_path
-      %li= link_to "People"
+      %li= link_to "People", people_path
     %form.span5.for-search(action="/videos/search")
       %input.search-query(type="text" name="search_term" placeholder="Search for videos here" value="#{@search_term}")
       %button.btn(type="submit") Search

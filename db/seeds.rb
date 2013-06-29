@@ -14,6 +14,9 @@ Video.create(title: 'SouthPark', description: 'south_park', large_cover: '/tmp/s
 Video.create(title: 'Arrow', description: 'arrow', large_cover: '/tmp/south_pard.jpg', small_cover: '/tmp/south_park.jpg', category_id: '2')
 
 ggd = User.create(email: 'ggd@example.com', password: '1234', full_name: 'Ga Dii')
+tifa = User.create(email: 'tifa@example.com', password: '1234', full_name: 'Tifa FF')
+
+Relationship.create(follower: ggd, leader: tifa)
 
 Review.create(user: ggd, video: monk, rating: 5, content: 'Awesome!')
 Review.create(user: ggd, video: monk, rating: 2, content: 'soso movie')
