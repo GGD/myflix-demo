@@ -9,7 +9,7 @@ Myflix::Application.routes.draw do
 
   root to: 'static#front'
 
-  resources :users, only: [:create]
+  resources :users, only: [:create, :show]
   resources :sessions, only: [:create]
   resources :categories, only: [:index, :show]
   resources :videos, only: [:show] do
