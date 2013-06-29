@@ -14,4 +14,12 @@ class User < ActiveRecord::Base
       queue_item.update_attributes(position: index+1)
     end
   end
+
+  def follow?(leader)
+    following_relationships.map(&:leader).include? leader
+  end
+
+  def can_follow?(leader)
+    !(follow?(leader) || self == leader)
+  end
 end
