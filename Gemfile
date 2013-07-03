@@ -14,6 +14,7 @@ group :development do
   gem 'sqlite3'
   gem 'pry'
   gem 'pry-nav'
+  gem 'letter_opener'
 end
 
 group :test, :development do
@@ -37,3 +38,4 @@ gem 'jquery-rails'
 gem 'strong_parameters'
 gem 'bootstrap_form'
 gem 'bcrypt-ruby'
+gem 'figaro'
