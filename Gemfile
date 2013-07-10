@@ -19,7 +19,6 @@ end
 
 group :test, :development do
   gem 'rspec-rails'
-  gem 'shoulda-matchers'
 end
 
 group :test do
@@ -27,6 +26,8 @@ group :test do
   gem 'faker'
   gem 'capybara'
   gem 'launchy'
+  gem 'shoulda-matchers'
+  gem 'capybara-email'
 end
 
 group :production do
