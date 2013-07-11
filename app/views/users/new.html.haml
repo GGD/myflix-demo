@@ -9,6 +9,7 @@
           = f.email_field :email, label: 'Email Address', class: 'span3'
           = f.password_field :password, label: 'Password', class: 'span3'
           = f.text_field :full_name, label: 'Full Name', class: 'span3'
+          = hidden_field_tag :invitation_token, @invitation_token
         %fieldset.actions.control-group
           .controls
             = f.secondary 'Sign Up'

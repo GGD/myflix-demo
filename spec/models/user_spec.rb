@@ -28,4 +28,19 @@ describe User do
       expect(tifa.follow?(bob)).to be_false
     end
   end
+
+  describe "#follow" do
+    it "follows the leader" do
+      tifa = Fabricate(:user)
+      bob = Fabricate(:user)
+      tifa.follow(bob)
+      expect(tifa.follow?(bob)).to be_true
+    end
+
+    it "does not follow one self" do
+      tifa = Fabricate(:user)
+      tifa.follow(tifa)
+      expect(tifa.follow?(tifa)).to be_false
+    end
+  end
 end
