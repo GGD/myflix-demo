@@ -14,6 +14,10 @@ Myflix::Application.routes.draw do
 
   root to: 'static#front'
 
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
+
   resources :users, only: [:create, :show]
   resources :relationships, only: [:create, :destroy]
   resources :sessions, only: [:create]
