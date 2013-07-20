@@ -7,7 +7,7 @@ CarrierWave.configure do |config|
       :aws_secret_access_key  => ENV['AWS_SECRET_ACCESS_KEY'],                        # required
       :region                 => 'ap-northeast-1'                  # optional, defaults to 'us-east-1'
     }
-    config.fog_directory  = 'name_of_directory'                     # required
+    config.fog_directory  = ENV['FOG_DIRECTORY']                     # required
   else
     config.storage = :file
     config.enable_processing = Rails.env.development?
