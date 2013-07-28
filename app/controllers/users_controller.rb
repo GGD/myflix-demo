@@ -9,6 +9,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       handle_invitation
+      charge_credit_card
       AppMailer.send_welcome_email(@user).deliver
       session[:user_id] = @user.id
       redirect_to categories_path
@@ -45,5 +46,15 @@ class UsersController < ApplicationController
       invitation.inviter.follow(@user)
       invitation.update_column(:token, nil)
     end
+  end
+
+  def charge_credit_card
+    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+    Stripe::Charge.create(
+      :amount => 999,
+      :currency => "usd",
+      :card => params[:stripeToken],
+      :description => "Sign up charge for #{@user.email}"
+    )
   end
 end
