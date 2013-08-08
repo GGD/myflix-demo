@@ -6,7 +6,7 @@
       .video_info.span3
         %header
           %h3= @video.title
-          %span Rating: #{@video.average_rating}/5.0
+          %span Rating: #{@video.rating}
         %p= @video.description
         .actions
           = link_to 'Watch Now', @video.video_url, class: 'btn btn-primary'
@@ -33,7 +33,7 @@
               .span2
                 %span Rating: #{review.rating} / 5
                 %p
-                  by 
+                  by
                   = link_to review.user.full_name, review.user
               .span8
                 %p #{review.content}

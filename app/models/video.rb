@@ -15,6 +15,6 @@ class Video < ActiveRecord::Base
 
   def average_rating
     rating_array = reviews.group(:user_id).map(&:rating)
-    (rating_array.sum.to_f / rating_array.size).round(1)
+    (rating_array.sum.to_f / rating_array.size).round(1) if rating_array.present?
   end
 end
