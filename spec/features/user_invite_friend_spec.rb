@@ -4,10 +4,10 @@ feature "User invites friend" do
 	scenario "User successfully invites friend and invitation is accepted", { js: true, vcr: true } do
 		tifa = Fabricate(:user)
 		sign_in(tifa)
-		
+
 		invite_a_friend
 		friend_accepts_invitation
-		
+
 		friend_should_follow(tifa)
 		inviter_sould_follow_frient(tifa)
 

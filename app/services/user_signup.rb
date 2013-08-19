@@ -8,8 +8,9 @@ class UserSignup
 
   def sign_up(stripe_token, invitation_token)
     if @user.valid?
-      charge = charge_credit_card(stripe_token)
-      if charge.successful?
+      subscription = handle_subscription(stripe_token)
+      if subscription.successful?
+        @user.stripe_customer_token = subscription.id
         @user.save
         handle_invitation(invitation_token)
         AppMailer.send_welcome_email(@user).deliver
@@ -18,7 +19,8 @@ class UserSignup
         self
       else
         @status = :failed
-        @error_message = charge.error_message
+        @error_message = subscription.error_message
+        self
       end
     else
       @status = :failed
@@ -32,6 +34,15 @@ class UserSignup
 
 private
 
+  def handle_subscription(stripe_token)
+    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+    StripeWrapper::Subscribe.create(
+      :card => stripe_token,
+      :email => @user.email,
+      :description => "Subscribe for #{@user.email}"
+    )
+  end
+
   def handle_invitation(invitation_token)
     if invitation_token.present?
       invitation = Invitation.where(token: invitation_token).first
@@ -39,14 +50,5 @@ private
       invitation.inviter.follow(@user)
       invitation.update_column(:token, nil)
     end
-  end
-
-  def charge_credit_card(stripe_token)
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
-    StripeWrapper::Charge.create(
-      :amount => 999,
-      :card => stripe_token,
-      :description => "Sign up charge for #{@user.email}"
-    )
   end
 end

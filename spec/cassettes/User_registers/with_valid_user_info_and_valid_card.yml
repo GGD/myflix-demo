@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://api.stripe.com/v1/charges
+    uri: https://api.stripe.com/v1/customers
     body:
       encoding: US-ASCII
-      string: amount=999&currency=usd&card=tok_2Lc0XJ5DB1JPRc&description=Sign%20up%20charge%20for%20ggd%40example.com
+      string: plan=gold&card=tok_2PkDyckYrY273O&description=Subscribe%20for%20ggd%40example.com
     headers:
       Accept:
       - ! '*/*; q=0.5, application/xml'
@@ -22,7 +22,7 @@ http_interactions:
         Gateki-MacBook-Air.local 12.4.0 Darwin Kernel Version 12.4.0: Wed May  1 17:57:12
         PDT 2013; root:xnu-2050.24.15~1/RELEASE_X86_64 x86_64"}'
       Content-Length:
-      - '104'
+      - '81'
   response:
     status:
       code: 200
@@ -31,37 +31,44 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 08 Aug 2013 14:52:54 GMT
+      - Mon, 19 Aug 2013 15:37:31 GMT
       Content-Type:
       - application/json;charset=utf-8
       Content-Length:
-      - '1110'
+      - '1621'
       Connection:
       - keep-alive
-      Cache-Control:
-      - no-cache, no-store
       Access-Control-Max-Age:
       - '300'
       Access-Control-Allow-Credentials:
       - 'true'
+      Cache-Control:
+      - no-cache, no-store
     body:
       encoding: US-ASCII
-      string: ! "{\n  \"id\": \"ch_2Lc0h5NZEzVNKH\",\n  \"object\": \"charge\",\n
-        \ \"created\": 1375973574,\n  \"livemode\": false,\n  \"paid\": true,\n  \"amount\":
-        999,\n  \"currency\": \"usd\",\n  \"refunded\": false,\n  \"fee\": 59,\n  \"fee_details\":
-        [\n    {\n      \"amount\": 59,\n      \"currency\": \"usd\",\n      \"type\":
-        \"stripe_fee\",\n      \"description\": \"Stripe processing fees\",\n      \"application\":
-        null,\n      \"amount_refunded\": 0\n    }\n  ],\n  \"card\": {\n    \"id\":
-        \"card_2Lc0cC0vJDXCn4\",\n    \"object\": \"card\",\n    \"last4\": \"4242\",\n
-        \   \"type\": \"Visa\",\n    \"exp_month\": 7,\n    \"exp_year\": 2015,\n
-        \   \"fingerprint\": \"MDPDqQ5D8jnzbtjS\",\n    \"customer\": null,\n    \"country\":
-        \"US\",\n    \"name\": null,\n    \"address_line1\": null,\n    \"address_line2\":
-        null,\n    \"address_city\": null,\n    \"address_state\": null,\n    \"address_zip\":
-        null,\n    \"address_country\": null,\n    \"cvc_check\": \"pass\",\n    \"address_line1_check\":
-        null,\n    \"address_zip_check\": null\n  },\n  \"captured\": true,\n  \"failure_message\":
-        null,\n  \"failure_code\": null,\n  \"amount_refunded\": 0,\n  \"customer\":
-        null,\n  \"invoice\": null,\n  \"description\": \"Sign up charge for ggd@example.com\",\n
-        \ \"dispute\": null\n}\n"
+      string: ! "{\n  \"object\": \"customer\",\n  \"created\": 1376926650,\n  \"id\":
+        \"cus_2PkDrFR3ZWcOYs\",\n  \"livemode\": false,\n  \"description\": \"Subscribe
+        for ggd@example.com\",\n  \"email\": null,\n  \"delinquent\": false,\n  \"subscription\":
+        {\n    \"plan\": {\n      \"interval\": \"month\",\n      \"name\": \"MyFlix
+        Gold\",\n      \"amount\": 999,\n      \"currency\": \"usd\",\n      \"id\":
+        \"gold\",\n      \"object\": \"plan\",\n      \"livemode\": false,\n      \"interval_count\":
+        1,\n      \"trial_period_days\": null\n    },\n    \"object\": \"subscription\",\n
+        \   \"start\": 1376926650,\n    \"status\": \"active\",\n    \"customer\":
+        \"cus_2PkDrFR3ZWcOYs\",\n    \"cancel_at_period_end\": false,\n    \"current_period_start\":
+        1376926650,\n    \"current_period_end\": 1379605050,\n    \"ended_at\": null,\n
+        \   \"trial_start\": null,\n    \"trial_end\": null,\n    \"canceled_at\":
+        null,\n    \"quantity\": 1\n  },\n  \"discount\": null,\n  \"account_balance\":
+        0,\n  \"cards\": {\n    \"object\": \"list\",\n    \"count\": 1,\n    \"url\":
+        \"/v1/customers/cus_2PkDrFR3ZWcOYs/cards\",\n    \"data\": [\n      {\n        \"id\":
+        \"card_2PkDGeqs7YVImR\",\n        \"object\": \"card\",\n        \"last4\":
+        \"4242\",\n        \"type\": \"Visa\",\n        \"exp_month\": 7,\n        \"exp_year\":
+        2015,\n        \"fingerprint\": \"MDPDqQ5D8jnzbtjS\",\n        \"customer\":
+        \"cus_2PkDrFR3ZWcOYs\",\n        \"country\": \"US\",\n        \"name\": null,\n
+        \       \"address_line1\": null,\n        \"address_line2\": null,\n        \"address_city\":
+        null,\n        \"address_state\": null,\n        \"address_zip\": null,\n
+        \       \"address_country\": null,\n        \"cvc_check\": \"pass\",\n        \"address_line1_check\":
+        null,\n        \"address_zip_check\": null\n      }\n    ]\n  },\n  \"default_card\":
+        \"card_2PkDGeqs7YVImR\"\n}\n"
     http_version: 
-  recorded_at: Thu, 08 Aug 2013 14:52:54 GMT
+  recorded_at: Mon, 19 Aug 2013 15:37:31 GMT
 recorded_with: VCR 2.5.0
