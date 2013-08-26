@@ -12,6 +12,11 @@ describe UserSignup do
         expect(User.count).to eq(1)
       end
 
+      it "stores the customer token from stripe" do
+        UserSignup.new(Fabricate.build(:user)).sign_up("some_stripe_token", nil)
+        expect(User.first.stripe_customer_token).to eq(subscribe.id)
+      end
+
       it "makes the user follow the inviter" do
         tifa = Fabricate(:user)
         invitation = Fabricate(:invitation, inviter: tifa, recipient_email: 'cloud@example.com')

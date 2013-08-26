@@ -59,6 +59,25 @@ describe StripeWrapper do
 
         expect(response.error_message).to eq('Your card was declined.')
       end
+
+      it "returns the customer token for a valid card", :vcr do
+        token = Stripe::Token.create(
+          card: {
+            number: "4242424242424242",
+            exp_month: 7,
+            exp_year: 2018,
+            cvc: "314"
+          },
+        ).id
+
+        response = StripeWrapper::Subscribe.create(
+          email: 'tifa@example.com',
+          card: token,
+          description: "a valid subscribe"
+        )
+
+        expect(response.id).to be_present
+      end
     end
   end
 end
