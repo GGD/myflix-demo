@@ -42,4 +42,12 @@ describe User do
       expect(tifa.follow?(tifa)).to be_false
     end
   end
+
+  describe "#deactivcate!" do
+    it "deactivcates an active user" do
+      tifa = Fabricate(:user, active: true)
+      tifa.deactivate!
+      expect(tifa).not_to be_active
+    end
+  end
 end

@@ -7,6 +7,11 @@ StripeEvent.setup do
     parameters = ActionController::Parameters.new(raw_parameters)
     Payment.create(payment_params(parameters))
   end
+
+  subscribe 'charge.failed' do |event|
+    user = User.where(stripe_customer_token: event.data.object.customer).first
+    user.deactivate!
+  end
 end
 
 private
